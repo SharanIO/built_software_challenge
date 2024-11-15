@@ -25,15 +25,19 @@ def sort_string(word: str) -> str:
         chars[j + 1] = key
     return ''.join(chars)
 
-def permute(word):
-    '''Permute the word'''
-    if len(word) == 1:
-        return [word]
-    perm_list = []
-    for index, char in enumerate(word):
-        for perm in permute(word[:index] + word[index + 1:]):
-            perm_list.append(char + perm)
-    return perm_list
+def get_combinations(letters: str) -> list:
+    '''Generate all possible combinations of the letters'''
+    combinations = []
+    n = len(letters)
+    total_combinations = 2 ** n
+    for i in range(1, total_combinations):
+        combo = ''
+        for j in range(n):
+            if i & (1 << j):
+                combo += letters[j]
+        combinations.append(combo)
+    return combinations
+
 
 def get_anagrams_and_subanagrams(perms: list, word_map: dict) -> tuple:
     '''Get anagrams and subanagrams'''
