@@ -7,7 +7,7 @@ def create_word_hash_map(word_list_file: str) -> dict:
     word_map = defaultdict(list)
     with open(word_list_file, 'r', encoding='utf-8') as file:
         for line in file:
-            word = line.strip.lower()
+            word = line.strip().lower()
             sorted_word = sort_string(word)
             word_map[sorted_word].append(word)
     return word_map
@@ -39,20 +39,29 @@ def get_combinations(letters: str) -> list:
     return combinations
 
 
-def get_anagrams_and_subanagrams(perms: list, word_map: dict) -> tuple:
+def get_anagrams_and_subanagrams(word: str, word_map: dict) -> tuple:
     '''Get anagrams and subanagrams'''
-    local_anagrams = []
-    local_subanagrams = []
-    for perm in perms:
-        local_anagrams.extend(word_map[perm])
-        for i in range(1, len(perm)):
-            local_subanagrams.extend(word_map[perm[:i]])
-    return local_anagrams, local_subanagrams
+    word = word.lower()
+    sorted_input_word = sort_string(word)
+    local_anagram_set = set(word_map.get(sorted_input_word, []))
+    sub_anagrams = set()
+
+    combos = get_combinations(word)
+    process_combos = set()
+    for combo in combos:
+        sorted_combo = sort_string(combo)
+        if sorted_combo in process_combos:
+            continue
+        process_combos.add(sorted_combo)
+        if sorted_combo == sorted_input_word:
+            continue
+        if sorted_combo in word_map:
+            sub_anagrams.update(word_map[sorted_combo])
+    return local_anagram_set, sub_anagrams
 
 if __name__ == '__main__':
     word_hash_map = create_word_hash_map('data/words_alpha.txt')
     input_word = input('Enter the word: ')
-    permutations = permute(input_word)
-    anagrams, subanagrams = get_anagrams_and_subanagrams(permutations, word_hash_map)
-    print(f'Anagrams: {anagrams}')
+    anagram_set, subanagrams = get_anagrams_and_subanagrams(input_word, word_hash_map)
+    print(f'Anagrams: {anagram_set}')
     print(f'Subanagrams: {subanagrams}')
