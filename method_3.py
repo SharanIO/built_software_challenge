@@ -6,9 +6,24 @@ def create_word_hash_map(word_list_file: str) -> dict:
     '''Create a hash map of words'''
     word_map = defaultdict(list)
     with open(word_list_file, 'r', encoding='utf-8') as file:
-        for word in file.read().split():
-            word_map[''.join(sorted(word))].append(word)
+        for line in file:
+            word = line.strip.lower()
+            sorted_word = sort_string(word)
+            word_map[sorted_word].append(word)
     return word_map
+
+def sort_string(word: str) -> str:
+    '''Sort the string'''
+    chars = list(word)
+    n = len(chars)
+    for i in range(1,n):
+        key = chars[i]
+        j = i - 1
+        while j >= 0 and key < chars[j]:
+            chars[j + 1] = chars[j]
+            j -= 1
+        chars[j + 1] = key
+    return ''.join(chars)
 
 def permute(word):
     '''Permute the word'''
