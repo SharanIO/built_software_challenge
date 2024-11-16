@@ -114,9 +114,27 @@ def get_anagrams_and_subanagrams(word: str, word_map: dict) -> tuple:
             sub_anagrams.update(word_map[sorted_combo])
     return local_anagram_set, sub_anagrams
 
+def main():
+    """
+    Main function to find anagrams and subanagrams of a given word.
+    
+    """
+
+    word_hashmap = create_word_hash_map('data/words_alpha.txt')
+    query = input('Enter the word: ')
+    anagrams, sub_anagram_set = get_anagrams_and_subanagrams(query, word_hashmap)
+    print(f'\nAnagrams of "{query}":')
+    if anagrams:
+        for word in anagrams:
+            print(word)
+    else:
+        print('No anagrams found.')
+    print(f'\nSub-anagrams of "{query}":')
+    if sub_anagram_set:
+        for word in sub_anagram_set:
+            print(word)
+    else:
+        print('No sub-anagrams found.')
+
 if __name__ == '__main__':
-    word_hash_map = create_word_hash_map('data/words_alpha.txt')
-    input_word = input('Enter the word: ')
-    anagram_set, subanagrams = get_anagrams_and_subanagrams(input_word, word_hash_map)
-    print(f'Anagrams: {anagram_set}')
-    print(f'Subanagrams: {subanagrams}')
+    main()
