@@ -1,8 +1,13 @@
 """
-    This module contains the implementation of the fifth method.
+    Method 5: Find anagrams and sub-anagrams of a given word using a Trie 
+    with letter frequency counts.
+
+    This module contains the implementation of the fifth method, which uses 
+    a Frequency Trie to efficiently find anagrams and sub-anagrams of a given word.
+
 """
 
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Set
 
 
 class TrieNode:
@@ -10,7 +15,7 @@ class TrieNode:
 
     def __init__(self) -> None:
         """Initialize the TrieNode with children and is_end_of_word attributes."""
-        self.children: Dict[str, 'TrieNode'] = {}
+        self.children: Dict[Tuple[str, int], 'TrieNode'] = {}
         self.words: List[str] = []
         self.is_end_of_word: bool = False
 
@@ -23,7 +28,13 @@ class FrequencyTrie:
         self.root: TrieNode = TrieNode()
 
     def insert(self, word: str) -> None:
-        freq = self._get_frequency_dict(word)
+        """
+        Insert a word into the Frequency Trie.
+
+        Args:
+            word (str): The word to be inserted into the Trie.
+        """
+        freq: Dict[str, int] = self._get_frequency_dict(word)
         freq_items = tuple(sorted(freq.items()))
         current: TrieNode = self.root
         for char, count in freq_items:
@@ -35,36 +46,83 @@ class FrequencyTrie:
         current.words.append(word)
 
     def _get_frequency_dict(self, word: str) -> Dict[str, int]:
+        """
+        Return a dictionary of letter frequencies in the given word.
+
+        Args:
+            word (str): The word to process
+
+        Returns:
+            Dict[str, int]: A dictionary mapping letters to their frequencies.
+        """
         freq_dict: Dict[str, int] = {}
         for char in word:
             freq_dict[char] = freq_dict.get(char, 0) + 1
         return freq_dict
 
     def find_anagrams_and_sub_anagrams(self, word: str) -> Tuple[List[str], List[str]]:
+        """
+        Find all anagrams and sub-anagrams of the given word.
+
+        Args:
+            word (str): The input word to find anagrams and sub-anagrams.
+
+        Returns:
+            Tuple[List[str], List[str]]: A tuple containing two lists:
+                - A list of anagrams of the input word.
+                - A list of sub-anagrams of the input word.
+        """
         word = word.lower()
         current: TrieNode = self.root
-        anagram = set()
-        sub_anagram = set()
+        anagram: Set[str] = set()
+        sub_anagrams: Set[str] = set()
         freq = self._get_frequency_dict(word)
         self._search_anagrams_and_sub_anagrams(
-            current, freq, "", anagram, sub_anagram, word_length=len(word))
+            current, freq, "", anagram, sub_anagrams, word_length=len(word))
 
         anagram.discard(word)
-        sub_anagram.discard(word)
-        return list(anagram), list(sub_anagram)
+        sub_anagrams.discard(word)
+        return list(anagram), list(sub_anagrams)
 
-    def _search_anagrams_and_sub_anagrams(self, current: TrieNode, freq: Dict[str, int], prefix: str, anagram: set, sub_anagram: set, word_length: int) -> None:
+    def _search_anagrams_and_sub_anagrams(
+        self,
+        current: TrieNode,
+        freq: Dict[str, int],
+        prefix: str,
+        anagrams: Set[str],
+        sub_anagrams: Set[str],
+        word_length: int
+    ) -> None:
+        """
+        Recursively search for anagrams and sub-anagrams in the Trie.
+
+        Args:
+            current (TrieNode): The current node in the Trie.
+            freq (Dict[str, int]): The frequency dictionary of remaining letters.
+            prefix (str): The current prefix string being formed.
+            anagrams (Set[str]): Set to store found anagrams.
+            sub_anagrams (Set[str]): Set to store found sub-anagrams.
+            word_length (int): The length of the input word.
+        """
         if current.is_end_of_word:
             for found_word in current.words:
                 if len(prefix) == word_length:
-                    anagram.add(found_word)
+                    anagrams.add(found_word)
                 else:
-                    sub_anagram.add(found_word)
+                    sub_anagrams.add(found_word)
         for (letter, count), child in current.children.items():
             if freq.get(letter, 0) >= count:
+                # Use the letter
                 freq[letter] -= count
                 self._search_anagrams_and_sub_anagrams(
-                    child, freq, prefix + letter * count, anagram, sub_anagram, word_length)
+                    current=child,
+                    freq=freq,
+                    prefix=prefix + letter * count,
+                    anagrams=anagrams,
+                    sub_anagrams=sub_anagrams,
+                    word_length=word_length
+                )
+                # Backtrack
                 freq[letter] += count
 
 
