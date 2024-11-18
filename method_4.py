@@ -15,6 +15,7 @@
     Date: 11-15-2024
     
 """
+
 from typing import Dict, List
 
 def preprocess_word_list(word_list_file: str) -> Dict[str, Dict[str, int]]:
@@ -109,6 +110,7 @@ def main():
             print(word)
     else:
         print('No sub-anagrams found.')
-    
+
+
 if __name__ == '__main__':
     main()

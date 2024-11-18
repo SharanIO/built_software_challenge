@@ -157,5 +157,6 @@ def main():
         print('No sub-anagrams found.')
 
 
+
 if __name__ == '__main__':
     main()

@@ -1,5 +1,5 @@
 """
-    Method 1: Find anagrams and subanagrams of a given word.
+    Brute force solver: Find anagrams and subanagrams of a given word.
     
     This program reads a word list from a file and finds all anagrams and sub-anagrams
     of a given input word by comapring the letters and their counts.
@@ -20,7 +20,7 @@ from collections import Counter
 from typing import List, Tuple
 
 
-class BruteForceAnagramSolver:
+class BruteFOrceAnagramSolver:
     """A class to solve jumble puzzles by finding anagrams and sub-anagrams.
     
     This class compares the letter counts of a given input word against a wrd list.
