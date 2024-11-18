@@ -20,7 +20,7 @@ from collections import Counter
 from typing import List, Tuple
 
 
-class BruteFOrceAnagramSolver:
+class BruteForceAnagramSolver:
     """A class to solve jumble puzzles by finding anagrams and sub-anagrams.
     
     This class compares the letter counts of a given input word against a wrd list.
