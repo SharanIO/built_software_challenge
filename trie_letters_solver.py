@@ -6,6 +6,9 @@ This program builds a Trie from a word list and uses recursive traversal to find
 
 The program uses the following steps:
 1. Loads Trie data structure with words from a word list file.
+2. Generates all valid combinations of letters from the input word.
+3. Generates all valid permutations of each combination.
+4. Searches the Trie for valid words and identifies anagrams and sub-anagrams.
 
 Author: Sai Sharan Thirunagari
 Date: 11-15-2024
