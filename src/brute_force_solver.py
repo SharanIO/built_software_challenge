@@ -1,19 +1,21 @@
 """
-    Brute force solver: Find anagrams and subanagrams of a given word.
-    
-    This program reads a word list from a file and finds all anagrams and sub-anagrams
-    of a given input word by comapring the letters and their counts.
-    
-    The program uses the following steps:
-    1. Read the word list from a file.
-    2. Find anagrams by comparing the letter counts of the 
-    input word and the words in the list.
-    3. Find sub-anagrams by checking if the letter counts of 
-    the input word are greater than or equal to the word in the list.
-    4. Print the anagrams and sub-anagrams of the input word.
-    
-    Author: Sai Sharan Thirunagari
-    Date: 11-15-2024
+Brute force solver: Find anagrams and subanagrams of a given word.
+
+This program reads a word list from a file and finds all anagrams and sub-anagrams
+of a given input word by comapring the letters and their counts.
+
+The program uses the following steps:
+1. Read the word list from a file.
+2. Find anagrams by comparing the letter counts of the 
+input word and the words in the list.
+3. Find sub-anagrams by checking if the letter counts of 
+the input word are greater than or equal to the word in the list.
+4. Print the anagrams and sub-anagrams of the input word.
+
+The complexity of this program is O(N*M), where N is the number of words in the list
+
+Author: Sai Sharan Thirunagari
+Date: 11-15-2024
 """
 
 from collections import Counter
@@ -63,24 +65,29 @@ class BruteForceAnagramSolver:
         Returns:
             tuple: A tuple containing a list of anagrams and a list of sub-anagrams.
         """
+
+        # Convert the input word to lowercase
         word_input = word_input.lower()
+
+        # Get the letter count for the input word
         input_counter = self._get_letter_count(word_input)
 
-
-        local_anagrams: List[str] = []
-        local_subanagrams: List[str] = []
+        # Initialize lists to store anagrams and sub-anagrams
+        anagrams: List[str] = []
+        subanagrams: List[str] = []
 
         for word in self.words:
+            # Convert the word to lowercase
             word_counter = self._get_letter_count(word)
 
             # Check if the word is an anagram
             if len(word) == len(word_input):
                 if word_counter == input_counter:
-                    local_anagrams.append(word)
+                    anagrams.append(word)
 
             # Check if the word is a sub-anagram
             if len(word) < len(word_input):
                 if all(word_counter[letter] <= input_counter[letter] for letter in word_counter):
-                    local_subanagrams.append(word)
+                    subanagrams.append(word)
 
-        return local_anagrams, local_subanagrams
+        return anagrams, subanagrams

@@ -24,14 +24,12 @@ class FrequencyTrie:
         Args:
             word (str): The word to be inserted into the Trie.
         """
-        freq: Dict[str, int] = self._get_frequency_dict(word)
-        freq_items = tuple(sorted(freq.items()))
+
         current: TrieNode = self.root
-        for char, count in freq_items:
-            key = (char, count)
-            if key not in current.children:
-                current.children[key] = TrieNode()
-            current = current.children[key]
+        for char in sorted(word):
+            if char not in current.children:
+                current.children[char] = TrieNode()
+            current = current.children[char]
         current.is_end_of_word = True
         current.words.append(word)
 

@@ -99,20 +99,20 @@ class HashMapSolver:
         """
         word = word.lower()
         sorted_input_word = self._sort_string(word)
-        local_anagrams: Set[str] = set(self.word_map.get(sorted_input_word, []))
+        
+        #Get Anagrams
+        anagrams: Set[str] = set(self.word_map.get(sorted_input_word, []))
+        
+        #Get Sub-anagrams
         sub_anagrams: Set[str] = set()
 
         combos = self._get_combinations(word)
-        process_combos: Set[str] = set()
 
         for combo in combos:
             sorted_combo = self._sort_string(combo)
-            if sorted_combo in process_combos:
-                continue
-            process_combos.add(sorted_combo)
             if sorted_combo == sorted_input_word:
                 continue
             if sorted_combo in self.word_map:
                 sub_anagrams.update(self.word_map[sorted_combo])
 
-        return local_anagrams, sub_anagrams
+        return anagrams, sub_anagrams

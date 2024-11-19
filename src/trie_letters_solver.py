@@ -10,6 +10,9 @@ The program uses the following steps:
 3. Generates all valid permutations of each combination.
 4. Searches the Trie for valid words and identifies anagrams and sub-anagrams.
 
+The complexity of this program for finding anagrams is O(N!), where N is the length of the input word.
+The complexity for finding sub-anagrams (subsets of the word) is O(2^N).
+
 Author: Sai Sharan Thirunagari
 Date: 11-15-2024
 """
@@ -17,7 +20,7 @@ Date: 11-15-2024
 from itertools import permutations, combinations
 from collections import Counter
 from typing import Set, Tuple
-from utils import Trie
+from utils.trie import Trie
 
 
 class TrieLetterSolver:
@@ -45,12 +48,18 @@ class TrieLetterSolver:
             Set[Tuple[str, ...]]: A set of valid combinations of letters as tuples.
         """
 
+        # Count the frequency of each letter in the word
         word_counter: Counter[str] = Counter(word)
+
+        # Generate all valid combinations of letters
         valid_combinations: Set[Tuple[str, ...]] = set()
 
         for r in range(1, len(word) + 1):
+
+            # Generate all combinations of length r
             for combo in combinations(word, r):
                 combo_counter: Counter[str] = Counter(combo)
+                # Check if the combination respects the letter frequency
                 if all(combo_counter[letter] <= word_counter[letter] for letter in combo):
                     valid_combinations.add(combo)
 
@@ -87,13 +96,19 @@ class TrieLetterSolver:
                 - A set of sub-anagrams of the input word.
         """
 
+        # Convert the input word to lowercase
         word_input = word_input.lower()
+
+        # Generate all valid combinations of letters from the input word
         all_combinations = self._generate_combinations(word_input)
 
+        # Initialize sets to store anagrams and sub-anagrams
         anagrams: Set[str] = set()
         sub_anagrams: Set[str] = set()
 
         for combo in all_combinations:
+
+            # Generate all valid permutations of the combination
             for word in self._generate_permutations(combo):
                 if len(word) == len(word_input) and self.trie.search(word):
                     anagrams.add(word)

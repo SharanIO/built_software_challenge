@@ -1,9 +1,21 @@
 """
-    Method 5: Find anagrams and sub-anagrams of a given word using a Trie 
-    with letter frequency counts.
+Trie Frequency Solver: Find anagrams and sub-anagrams of a given word using a Trie 
+with letter frequency counts.
 
-    This module contains the implementation of the fifth method, which uses 
-    a Frequency Trie to efficiently find anagrams and sub-anagrams of a given word.
+This module contains the implementation of the fifth method, which uses 
+a Frequency Trie to efficiently find anagrams and sub-anagrams of a given word.
+
+The TrieFrequencySolver class extends the FrequencyTrie class and implements
+the find_anagrams_and_subanagrams method to search for anagrams and sub-anagrams
+of a given word using the Trie data structure.
+
+The program uses following steps:
+1. Initialize the Trie with a root node.
+2. Search the Trie for anagrams and sub-anagrams of the input word by recursively searching the Trie.
+3. Return the found anagrams and sub-anagrams.
+
+Author: Sai Sharan Thirunagari
+Date: 11-15-2024
 
 """
 
@@ -31,12 +43,20 @@ class TrieFrequencySolver(FrequencyTrie):
                 - A list of anagrams of the input word.
                 - A list of sub-anagrams of the input word.
         """
+        # Ensure the word is in lowercase for uniform comparison
         word = word.lower()
+        
+        # Start from the root of the Trie
         current: TrieNode = self.root
+
+        # Sets to store unique anagrams and sub-anagrams
         anagrams: Set[str] = set()
         sub_anagrams: Set[str] = set()
+
+        # Generate a frequency dictionary for the input word
         freq = self._get_frequency_dict(word)
 
+        # Recursively search for anagrams and sub-anagrams in the Trie
         self._search_anagrams_and_sub_anagrams(
             current=current,
             freq=freq,
@@ -46,8 +66,11 @@ class TrieFrequencySolver(FrequencyTrie):
             word_length=len(word)
         )
 
+        # Remove the original word from the results if it's present
         anagrams.discard(word)
         sub_anagrams.discard(word)
+
+        # Return results as lists
         return list(anagrams), list(sub_anagrams)
 
     def _search_anagrams_and_sub_anagrams(
@@ -70,23 +93,26 @@ class TrieFrequencySolver(FrequencyTrie):
             sub_anagrams (Set[str]): Set to store found sub-anagrams.
             word_length (int): The length of the input word.
         """
+        # If this node marks the end of a word, check if it’s an anagram or sub-anagram
         if current.is_end_of_word:
             for found_word in current.words:
                 if len(prefix) == word_length:
+                    # If the length of the prefix matches the input word, it's an anagram
                     anagrams.add(found_word)
                 else:
+                    # Otherwise, it's a sub-anagram
                     sub_anagrams.add(found_word)
-        for (letter, count), child in current.children.items():
-            if freq.get(letter, 0) >= count:
+        for letter, child in current.children.items():
+            if freq.get(letter, 0) > 0:
                 # Use the letter
-                freq[letter] -= count
+                freq[letter] -= 1
                 self._search_anagrams_and_sub_anagrams(
                     current=child,
                     freq=freq,
-                    prefix=prefix + letter * count,
+                    prefix=prefix + letter,
                     anagrams=anagrams,
                     sub_anagrams=sub_anagrams,
                     word_length=word_length
                 )
                 # Backtrack
-                freq[letter] += count
+                freq[letter] += 1

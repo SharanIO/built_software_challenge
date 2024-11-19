@@ -2,8 +2,8 @@ import os
 import pickle
 from collections import defaultdict
 from typing import Any, List, Dict
-from trie import Trie
-from frequency_trie import FrequencyTrie
+from utils.trie import Trie
+from utils.frequency_trie import FrequencyTrie
 
 
 class DataManager:
@@ -115,10 +115,13 @@ class DataManager:
             Dict[str, Dict[str, int]]: A dictionary mapping each word to a dictionary
             of its letter frequencies.
         """
-        hash_map = {}
+        hash_map = defaultdict(list)
         for word in words_data:
             word = word.lower()
-            hash_map[word] = DataManager._get_letter_counts(word)
+            letter_counts = DataManager._get_letter_counts(word)
+            # Convert letter counts to a sorted tuple for consistent hashable keys
+            letter_counts_tuple = tuple(sorted(letter_counts.items()))
+            hash_map[letter_counts_tuple].append(word)
         return hash_map
 
     @staticmethod

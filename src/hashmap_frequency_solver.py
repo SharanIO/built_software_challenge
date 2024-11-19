@@ -63,24 +63,36 @@ class HashMapFrequencySolver:
         """
         word = word.lower()
         input_letter_counts: Dict[str, int] = self._get_letter_counts(word)
+        input_letter_counts_tuple = tuple(sorted(input_letter_counts.items()))
+        # anagrams: List[str] = self.word_letter_counts.get(input_letter_counts, [])
+        # Find exact anagrams (key match)
+        anagrams = self.word_letter_counts.get(input_letter_counts_tuple, [])
 
-        anagrams: List[str] = []
         sub_anagrams: List[str] = []
-        for candidate, letter_counts in self.word_letter_counts.items():
-            if len(candidate) > len(word):
-                continue
+        # for candidate, letter_counts in self.word_letter_counts.items():
+        #     if len(candidate) > len(word):
+        #         continue
 
-            is_anagram: bool = True
-            for letter, count in letter_counts.items():
-                if input_letter_counts.get(letter, 0) < count:
-                    is_anagram = False
-                    break
+        #     is_anagram: bool = True
+        #     for letter, count in letter_counts.items():
+        #         if input_letter_counts.get(letter, 0) < count:
+        #             is_anagram = False
+        #             break
 
-            if is_anagram:
-                if len(candidate) == len(word):
-                    anagrams.append(candidate)
-                else:
-                    sub_anagrams.append(candidate)
+        #     if is_anagram:
+        #         if len(candidate) == len(word):
+        #             anagrams.append(candidate)
+        #         else:
+        #             sub_anagrams.append(candidate)
+        for candidate_counts_tuple, candidate_words in self.word_letter_counts.items():
+            candidate_letter_counts = dict(candidate_counts_tuple)
+            print(candidate_counts_tuple, candidate_words, candidate_letter_counts)
+            # Check if candidate is a subset of the input word
+            if all(
+                input_letter_counts.get(letter, 0) >= count
+                for letter, count in candidate_letter_counts.items()
+            ):
+                sub_anagrams.extend(candidate_words)
 
         return anagrams, sub_anagrams
 
