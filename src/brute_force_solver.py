@@ -1,18 +1,17 @@
 """
-Brute force solver: Find anagrams and subanagrams of a given word.
+Brute Force Solver: Find anagrams and sub-anagrams of a given word.
 
-This program reads a word list from a file and finds all anagrams and sub-anagrams
-of a given input word by comapring the letters and their counts.
+This program compares an input word against a list of words and identifies:
+1. Anagrams: Words that have exactly the same letters as the input word.
+2. Sub-anagrams: Words that use a subset of the letters in the input word.
 
-The program uses the following steps:
-1. Read the word list from a file.
-2. Find anagrams by comparing the letter counts of the 
-input word and the words in the list.
-3. Find sub-anagrams by checking if the letter counts of 
-the input word are greater than or equal to the word in the list.
-4. Print the anagrams and sub-anagrams of the input word.
+Steps:
+1. Count the frequency of letters in the input word.
+2. Compare each word in the word list to determine if it is an anagram or sub-anagram.
+3. Return lists of anagrams and sub-anagrams.
 
-The complexity of this program is O(N*M), where N is the number of words in the list
+Complexity:
+- Time complexity: O(N * M), where N is the number of words in the list and M is the average word length.
 
 Author: Sai Sharan Thirunagari
 Date: 11-15-2024
@@ -23,71 +22,80 @@ from typing import List, Tuple
 
 
 class BruteForceAnagramSolver:
-    """A class to solve jumble puzzles by finding anagrams and sub-anagrams.
-    
-    This class compares the letter counts of a given input word against a wrd list.
-    It identifies:
-    - Anagrams: Words that have the same letters as the input word.
-    - Sub-anagrams: Words that can be formed using a subset of the letters in the input word.
+    """
+    A solver for finding anagrams and sub-anagrams using a brute-force approach.
+
+    This solver compares the letter frequencies of an input word against a word list
+    to identify:
+    - Anagrams: Words with exactly the same letters as the input word.
+    - Sub-anagrams: Words that can be formed using a subset of the input word's letters.
     """
 
     def __init__(self, word_list: List[str]) -> None:
         """
-        Initialize the JumbleSolver with a word list.
-        
+        Initialize the solver with a list of words.
+
         Args:
             word_list (List[str]): A list of valid words to compare against.
         """
+        if not word_list:
+            raise ValueError("Word list cannot be empty.")
         self.words = word_list
 
     @staticmethod
     def _get_letter_count(word: str) -> Counter:
         """
-        Count the frequency of each letter in the word.
-        
-        This method creates a Counter object to store the frequency of each letter in the word.
+        Count the frequency of each letter in a word.
 
         Args:
-            word (str): The input word to count the letter frequency.
+            word (str): The input word.
 
         Returns:
-            Counter: A Counter object with the frequency of each letter in the word.
+            Counter: A Counter object mapping each letter to its frequency.
         """
         return Counter(word)
 
     def find_anagrams_and_subanagrams(self, word_input: str) -> Tuple[List[str], List[str]]:
         """
-        Get anagrams and sub-anagrams of the input word.
+        Find anagrams and sub-anagrams of the input word.
+
+        Steps:
+        1. Convert the input word to lowercase for case-insensitive comparison.
+        2. Calculate the letter frequency of the input word.
+        3. Iterate through the word list to identify anagrams and sub-anagrams.
 
         Args:
-            word_input (str): The input word for which anagrams and sub-anagrams.
+            word_input (str): The input word to analyze.
 
         Returns:
-            tuple: A tuple containing a list of anagrams and a list of sub-anagrams.
+            Tuple[List[str], List[str]]:
+                - A list of anagrams of the input word.
+                - A list of sub-anagrams of the input word.
         """
-
-        # Convert the input word to lowercase
+        # Normalize the input word to lowercase
         word_input = word_input.lower()
 
-        # Get the letter count for the input word
-        input_counter = self._get_letter_count(word_input)
+        # Calculate the letter frequency of the input word
+        input_letter_counts = self._get_letter_count(word_input)
 
-        # Initialize lists to store anagrams and sub-anagrams
+        # Initialize lists to store results
         anagrams: List[str] = []
-        subanagrams: List[str] = []
+        sub_anagrams: List[str] = []
 
         for word in self.words:
-            # Convert the word to lowercase
-            word_counter = self._get_letter_count(word)
+            # Normalize each word in the list
+            word = word.lower()
+            word_letter_counts = self._get_letter_count(word)
 
             # Check if the word is an anagram
-            if len(word) == len(word_input):
-                if word_counter == input_counter:
-                    anagrams.append(word)
+            if len(word) == len(word_input) and word_letter_counts == input_letter_counts:
+                anagrams.append(word)
 
             # Check if the word is a sub-anagram
-            if len(word) < len(word_input):
-                if all(word_counter[letter] <= input_counter[letter] for letter in word_counter):
-                    subanagrams.append(word)
+            elif len(word) < len(word_input) and all(
+                word_letter_counts[letter] <= input_letter_counts[letter]
+                for letter in word_letter_counts
+            ):
+                sub_anagrams.append(word)
 
-        return anagrams, subanagrams
+        return anagrams, sub_anagrams
